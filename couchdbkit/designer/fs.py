@@ -202,11 +202,14 @@ class FSDoc(object):
                 # clean views
                 # we remove empty views and malformed from the list
                 # of pushed views. We also clean manifest
+                language = None
                 views = {}
                 dmanifest = {}
                 for i, fname in enumerate(manifest):
                     if fname.startswith("views/") and fname != "views/":
                         name, ext = os.path.splitext(fname)
+                        if ext == '.erl':
+                            language = 'erlang'
                         if name.endswith('/'):
                             name = name[:-1]
                         dmanifest[name] = i
@@ -217,6 +220,8 @@ class FSDoc(object):
                     else:
                         del manifest[dmanifest["views/%s" % vname]]
                 self._doc['views'] = views
+                if language:
+                    self._doc['language'] = language
                 package_views(self._doc,self._doc["views"], self.docdir,
                         objects)
 
